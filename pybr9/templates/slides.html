@@ -1,0 +1,107 @@
+{% extends "base.html" -%}
+{% block slides -%}
+
+<section class="slide">
+    <h1>{{ title }}</h1>
+</section>
+
+<section class="slide">
+    <h2>Quem sou?</h2>
+    <ul>
+        <li class="slide">Rafael Goncalves Martins</li>
+        <li class="slide">Engenheiro de Controle e Automação</li>
+        <li class="slide">Desenvolvedor do Gentoo Linux</li>
+        <li class="slide">Pythonista no Titans Group</li>
+        <li class="slide">Usuário do Flask desde quando era apenas uma piada de 1º de abril</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Tópicos principais</h2>
+    <ul>
+        <li class="slide">Organização e criação de views</li>
+        <li class="slide">Uso de blueprints</li>
+        <li class="slide">Importancia dos contextos de aplicação e requisição</li>
+        <li class="slide">Manipulação de exceções</li>
+        <li class="slide">Customização da estrutura básica do framework</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h1>Organização e criação de views</h1>
+</section>
+
+<section class="slide">
+    <h2>Hello world!</h2>
+    {{ highlight_example('ex1') }}
+</section>
+
+<section class="slide">
+    <h2>Hello world!</h2>
+    {{ run_example('ex1') }}
+</section>
+
+<section class="slide">
+    <h1><em>Parece bom, não?! Mas ...</em></h1>
+</section>
+
+<section class="slide">
+    <h2>Aceitando múltiplos métodos HTTP</h2>
+    {{ highlight_example('ex2') }}
+</section>
+
+<section class="slide">
+    <h2>Aceitando múltiplos métodos HTTP</h2>
+    {{ run_example('ex2') }}
+</section>
+
+<section class="slide">
+    <h1><em>Hmm... Talvez possa ficar melhor...</em></h1>
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views</h2>
+    {{ highlight_example('ex3') }}
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views</h2>
+    {{ run_example('ex3') }}
+</section>
+
+<section class="slide">
+    <h1><em>E que tal reaproveitar o código?!</em></h1>
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views com mixin</h2>
+    {{ highlight_example('ex4') }}
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views com mixin</h2>
+    {{ run_example('ex4') }}
+</section>
+
+<section class="slide">
+    <h2>Perguntas?</h2>
+    <ul>
+        <li>
+            Email:
+            <ul>
+                <li>rafael@rafaelmartins.eng.br</li>
+                <li>rafael.martins@titansgroup.com.br</li>
+            </ul>
+        </li>
+        <li>
+            IRC: rafaelmartins@chat.freenode.net
+            <ul>
+                <li>#pocoo</li>
+                <li>#python-br</li>
+                <li>#gentoo-br</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+{%- endblock slides %}
