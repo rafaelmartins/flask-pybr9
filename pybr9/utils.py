@@ -56,6 +56,8 @@ def load_examples(flask_app):
             continue
         # transfer global settings to the example app
         app.config.update(flask_app.config)
+        # disable debug for the example app
+        app.debug = False
         apps['/examples/%s' % import_name] = app
         # bind the example to the main flask, so we can reuse it later.
         # we can't use 'g' here because we are outside of app context, and if
