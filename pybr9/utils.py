@@ -47,10 +47,15 @@ def load_examples(flask_app):
             continue
         app = getattr(mod, 'app', None)
         app = getattr(mod, 'application', app)  # mod_wsgi default
-        if app is None:
-            continue
+        if app is None:  # let's try to load from a factory.
+            factory = getattr('mod', 'create_app')
+            if factory is None:
+                continue
+            app = factory()
         if not isinstance(app, Flask):
             continue
+        # transfer global settings to the example app
+        app.config.update(flask_app.config)
         apps['/examples/%s' % import_name] = app
         # bind the example to the main flask, so we can reuse it later.
         # we can't use 'g' here because we are outside of app context, and if
