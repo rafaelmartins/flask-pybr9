@@ -1,3 +1,10 @@
+/*
+ * WARNING: File edited by hand! do not run sass before reimplement the changes in web-2.0.scss.
+ *
+ * FIXME: reimplement all the manual changes in web-2.0.scss
+ *
+ */
+
 @charset "UTF-8";
 .deck-container {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
@@ -48,19 +55,19 @@
 .deck-container .slide h3 {
   color: #000;
 }
-.deck-container .slide pre {
+.deck-container .slide pre, .deck-container .slide .iframe {
   border-color: #cde;
   background: #fff;
   position: relative;
   z-index: auto;
   /* http://nicolasgallagher.com/css-drop-shadows-without-images/ */
 }
-.borderradius .deck-container .slide pre {
+.borderradius .deck-container .slide pre, .borderradius .deck-container .slide .iframe {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-.csstransforms.boxshadow .deck-container .slide pre > :first-child:before {
+.csstransforms.boxshadow .deck-container .slide pre > :first-child:before, .csstransforms.boxshadow .deck-container .slide .iframe > :first-child:before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -70,7 +77,7 @@
   left: 0;
   right: 0;
 }
-.csstransforms.boxshadow .deck-container .slide pre:before, .csstransforms.boxshadow .deck-container .slide pre:after {
+.csstransforms.boxshadow .deck-container .slide pre:before, .csstransforms.boxshadow .deck-container .slide pre:after, .csstransforms.boxshadow .deck-container .slide .iframe:before, .csstransforms.boxshadow .deck-container .slide .iframe:after {
   content: "";
   position: absolute;
   z-index: -2;
@@ -82,7 +89,7 @@
   -moz-box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
   box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
 }
-.csstransforms.boxshadow .deck-container .slide pre:before {
+.csstransforms.boxshadow .deck-container .slide pre:before, .csstransforms.boxshadow .deck-container .slide .iframe:before {
   left: 10px;
   -webkit-transform: rotate(-3deg);
   -moz-transform: rotate(-3deg);
@@ -90,7 +97,7 @@
   -o-transform: rotate(-3deg);
   transform: rotate(-3deg);
 }
-.csstransforms.boxshadow .deck-container .slide pre:after {
+.csstransforms.boxshadow .deck-container .slide pre:after, .csstransforms.boxshadow .deck-container .slide .iframe:after {
   right: 10px;
   -webkit-transform: rotate(3deg);
   -moz-transform: rotate(3deg);

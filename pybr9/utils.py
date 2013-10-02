@@ -73,5 +73,7 @@ def load_examples(flask_app):
 
 def run_example(name):
     return Markup('''\
-<iframe src="%s" width="640" height="480" style="background-color: #fff">\
-</iframe>''' % url_for('examples', example=name))
+<div class="iframe">
+    <iframe src="%s" style="width: 100%%; height:100%%; background-color: #fff">
+    </iframe>
+</div>''' % url_for('examples', example=name))
