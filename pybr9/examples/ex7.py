@@ -14,10 +14,10 @@ def create_app():
 class MyTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
-        self.app.config["NAME"] = 'foo'
+        self.app.config["NAME"] = "foo"
 
     def test_foo(self):
-        rv = self.app.test_client().get('/')
+        rv = self.app.test_client().get("/")
         self.assertIn("Hello foo", rv.data)
 
 if __name__ == "__main__":
