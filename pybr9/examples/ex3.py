@@ -13,6 +13,3 @@ class HelloView(MethodView):
 app.add_url_rule('/',
     view_func=HelloView.as_view('hello'),
     methods=["GET", "POST"])
-
-if __name__ == "__main__":
-    app.run()

@@ -7,6 +7,3 @@ def hello():
         return "Hello World, with GET!"
     if request.method == "POST":
         return "Hello World, with POST!"
-
-if __name__ == "__main__":
-    app.run()
