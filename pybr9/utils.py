@@ -48,7 +48,7 @@ def load_examples(flask_app):
         app = getattr(mod, 'app', None)
         app = getattr(mod, 'application', app)  # mod_wsgi default
         if app is None:  # let's try to load from a factory.
-            factory = getattr('mod', 'create_app')
+            factory = getattr(mod, 'create_app')
             if factory is None:
                 continue
             app = factory()
