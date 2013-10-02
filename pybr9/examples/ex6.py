@@ -3,7 +3,8 @@ bp = Blueprint("views", __name__)
 
 @bp.route("/")
 def hello():
-    return "Hello World from a blueprint, with an app factory!"
+    return "Hello World from a blueprint, " \
+           "with an app factory!"
 
 def create_app():
     app = Flask(__name__)
