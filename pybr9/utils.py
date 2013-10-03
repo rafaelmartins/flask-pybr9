@@ -1,4 +1,4 @@
-from flask import Flask, current_app, url_for
+from flask import Flask, current_app
 from jinja2 import Markup
 from importlib import import_module
 from inspect import getsource
