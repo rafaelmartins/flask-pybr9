@@ -8,7 +8,7 @@
 @charset "UTF-8";
 .deck-container {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-  font-size: 1.75em;
+  font-size: 1.25em;
   background: #f4fafe;
   /* Old browsers */
   background: -moz-linear-gradient(top, #f4fafe 0%, #ccf0f0 100%);
@@ -110,7 +110,7 @@
 }
 .deck-container .slide blockquote {
   font-family: "Hoefler Text", Constantia, Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  font-size: 2em;
+  font-size: 1.5em;
   padding: 1em 2em .5em 2em;
   color: #000;
   background: #fff;
@@ -161,7 +161,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  font-size: 5em;
+  font-size: 4em;
   line-height: 1;
   color: #ccf0f0;
   z-index: 1;
