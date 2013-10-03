@@ -1,3 +1,9 @@
+{% macro run_example(name) -%}
+<div class="iframe">
+    <iframe src="{{ url_for('examples', example=name) }}">
+    </iframe>
+</div>
+{%- endmacro -%}
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,6 +32,15 @@
 
     <!-- Pygments highlight -->
     <link rel="stylesheet" href="{{ url_for('views.pygments_css') }}">
+
+    <!-- fix iframe style -->
+    <style type="text/css">
+    iframe {
+        width: 100%;
+        height: 480px;
+        background-color: #fff;
+    }
+    </style>
 
     <!-- Required Modernizr file -->
     <script src="{{ url_for('static', filename='modernizr.custom.js') }}"></script>
