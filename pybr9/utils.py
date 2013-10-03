@@ -69,11 +69,3 @@ def load_examples(flask_app):
     flask_app.add_url_rule('/examples/<example>', endpoint='examples',
                            build_only=True)
     flask_app.wsgi_app = DispatcherMiddleware(flask_app.wsgi_app, apps)
-
-
-def run_example(name):
-    return Markup('''\
-<div class="iframe">
-    <iframe src="%s" style="width: 100%%; height: 480px; background-color: #fff">
-    </iframe>
-</div>''' % url_for('examples', example=name))
