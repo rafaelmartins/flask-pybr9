@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask
 from werkzeug.exceptions import PreconditionFailed
 app = Flask(__name__)
 

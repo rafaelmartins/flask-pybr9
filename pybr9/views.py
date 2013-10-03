@@ -1,7 +1,5 @@
-from flask import Blueprint, current_app, make_response, render_template
+from flask import Blueprint, make_response, render_template
 from pygments.formatters import HtmlFormatter
-
-from pybr9.utils import highlight_object
 
 views = Blueprint('views', __name__)
 
