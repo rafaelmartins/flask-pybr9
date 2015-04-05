@@ -6,6 +6,7 @@ wget \
     --adjust-extension \
     --page-requisites \
     --no-parent \
+    --content-on-error \
     http://127.0.0.1:5000/
 
 github-pages-publish \
