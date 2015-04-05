@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=1024, user-scalable=no">
+
+    <title>Construindo aplicações de grande porte com o Flask</title>
+
+    <!-- Required stylesheet -->
+    <link rel="stylesheet" href="static/core/deck.core.css">
+
+    <!-- Extension CSS files go here. Remove or add as needed. -->
+    <link rel="stylesheet" href="static/extensions/goto/deck.goto.css">
+    <link rel="stylesheet" href="static/extensions/menu/deck.menu.css">
+    <link rel="stylesheet" href="static/extensions/navigation/deck.navigation.css">
+    <link rel="stylesheet" href="static/extensions/status/deck.status.css">
+    <link rel="stylesheet" href="static/extensions/hash/deck.hash.css">
+    <link rel="stylesheet" href="static/extensions/scale/deck.scale.css">
+
+    <!-- Style theme. More available in /themes/style/ or create your own. -->
+    <link rel="stylesheet" href="static/themes/style/web-2.0-full.css">
+
+    <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+    <link rel="stylesheet" href="static/themes/transition/horizontal-slide.css">
+
+    <!-- Pygments highlight -->
+    <link rel="stylesheet" href="pygments.css">
+
+    <!-- fix iframe style -->
+    <style type="text/css">
+    iframe {
+        width: 100%;
+        height: 480px;
+        background-color: #fff;
+    }
+    </style>
+
+    <!-- Required Modernizr file -->
+    <script src="static/modernizr.custom.js"></script>
+</head>
+<body class="deck-container">
+
+<!-- Begin slides. Just make elements with a class of slide. -->
+
+<section class="slide">
+    <h1>Construindo aplicações de grande porte com o Flask</h1>
+</section>
+
+<section class="slide">
+    <h2>Quem sou?</h2>
+    <ul>
+        <li>Rafael Goncalves Martins</li>
+        <li>Engenheiro de Controle e Automação</li>
+        <li>Desenvolvedor do Gentoo Linux</li>
+        <li>Pythonista no Titans Group</li>
+        <li>Usuário do Flask desde quando o framework era apenas uma piada de 1º de abril</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Esta palestra não é</h2>
+    <ul>
+        <li>Introdução ao Flask</li>
+        <li>Sobre escalabilidade</li>
+        <li>Sobre melhoria de performance</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Sobre o Flask</h2>
+    <ul>
+        <li>Micro-framework baseado no Jinja e no Werkzeug</li>
+        <li>Camada de abstração das 2 bibliotecas</li>
+        <li>Qualquer aplicação desenvolvida com o Flask pode ser desenvolvida com Jinja e Werkzeug puros</li>
+        <li><strong>Jinja + Werkzeug == Flask</strong>, mas <strong>Flask != Jinja + Werkzeug</strong></li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>DENIED</h2>
+    <img src="static/images/denied.png">
+</section>
+
+<section class="slide">
+    <h2>DENIED</h2>
+    <ul>
+        <li>Site: <a href="http://denied.immersedcode.org/">http://denied.immersedcode.org/</a></li>
+        <li>
+            <em>Post Mortem</em> da piada de 1º de abril:
+            <br>
+            <a href="http://lucumr.pocoo.org/2010/4/3/april-1st-post-mortem/">
+                http://lucumr.pocoo.org/2010/4/3/april-1st-post-mortem/
+            </a>
+        </li>
+        <li>
+            Post sobre a criação de frameworks customizados usando Jinja e Werkzeug:
+            <br>
+            <a href="http://lucumr.pocoo.org/2010/6/14/opening-the-flask/">
+                http://lucumr.pocoo.org/2010/6/14/opening-the-flask/
+            </a>
+        </li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Tópicos principais</h2>
+    <ul>
+        <li>Organização e criação de views</li>
+        <li>Uso de <em>blueprints</em> e <em>factories</em></li>
+        <li>Manipulação de exceções</li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h1>Organização e criação de views</h1>
+</section>
+
+<section class="slide">
+    <h2>Hello world!</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World!&quot;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Hello world!</h2>
+    <div class="iframe">
+    <iframe src="examples/ex1.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h1><em>Parece bom, não?! Mas ...</em></h1>
+</section>
+
+<section class="slide">
+    <h2>Aceitando múltiplos métodos HTTP</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;GET&quot;</span><span class="p">,</span> <span class="s">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&quot;GET&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with GET!&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with POST!&quot;</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Aceitando múltiplos métodos HTTP</h2>
+    <div class="iframe">
+    <iframe src="examples/ex2.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h1><em>Hmm... Talvez possa ficar melhor...</em></h1>
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">MethodView</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">HelloView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with GET, &quot;</span> \
+               <span class="s">&quot;from a class-based view!&quot;</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with POST, &quot;</span> \
+               <span class="s">&quot;from a class-based view!&quot;</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span>
+    <span class="n">view_func</span><span class="o">=</span><span class="n">HelloView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">),</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;GET&quot;</span><span class="p">,</span> <span class="s">&quot;POST&quot;</span><span class="p">])</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views</h2>
+    <div class="iframe">
+    <iframe src="examples/ex3.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h1><em>E que tal reaproveitar o código?!</em></h1>
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views com mixin</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">MethodView</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">GetMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with GET, &quot;</span> \
+               <span class="s">&quot;from a mixin!&quot;</span>
+
+<span class="k">class</span> <span class="nc">HelloView</span><span class="p">(</span><span class="n">MethodView</span><span class="p">,</span> <span class="n">GetMixin</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Hello World, with POST, &quot;</span> \
+               <span class="s">&quot;from a class-based view!&quot;</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span>
+    <span class="n">view_func</span><span class="o">=</span><span class="n">HelloView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">),</span>
+    <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;GET&quot;</span><span class="p">,</span> <span class="s">&quot;POST&quot;</span><span class="p">])</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2><em>Class-based</em> views com mixin</h2>
+    <div class="iframe">
+    <iframe src="examples/ex4.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h1>Uso de <em>blueprints</em> e <em>factories</em></h1>
+</section>
+
+<section class="slide">
+    <h2>Blueprint básico</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">Blueprint</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">bp</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s">&quot;views&quot;</span><span class="p">,</span> <span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@bp.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World from a blueprint!&quot;</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Blueprint básico</h2>
+    <div class="iframe">
+    <iframe src="examples/ex5.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2>Blueprint inicializado com <em>app factory</em></h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">Blueprint</span>
+<span class="n">bp</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s">&quot;views&quot;</span><span class="p">,</span> <span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@bp.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello World from a blueprint, &quot;</span> \
+           <span class="s">&quot;with an app factory!&quot;</span>
+
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Blueprint inicializado com <em>app factory</em></h2>
+    <div class="iframe">
+    <iframe src="examples/ex6.html">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2>Isolando testes com <em>app factories</em></h2>
+    <div class="highlight"><pre><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">Blueprint</span><span class="p">,</span> <span class="n">current_app</span>
+<span class="n">bp</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s">&quot;views&quot;</span><span class="p">,</span> <span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@bp.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&quot;Hello </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;NAME&quot;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">register_blueprint</span><span class="p">(</span><span class="n">bp</span><span class="p">,</span> <span class="n">url_prefix</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span>
+
+<span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;NAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span>
+
+    <span class="k">def</span> <span class="nf">test_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s">&quot;Hello foo&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Isolando testes com <em>app factories</em></h2>
+    <div class="highlight"><pre><span class="k">class</span> <span class="nc">MyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&quot;NAME&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span>
+
+    <span class="k">def</span> <span class="nf">test_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s">&quot;Hello foo&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h1>Manipulação de exceções</h1>    
+</section>
+
+<section class="slide">
+    <h2>Retornando um <em>status code</em> HTTP</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">abort</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="n">abort</span><span class="p">(</span><span class="mi">412</span><span class="p">)</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Retornando um <em>status code</em> HTTP</h2>
+    <div class="iframe">
+    <iframe src="http://127.0.0.1:5000/examples/ex8">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2>Retornando um <em>status code</em> HTTP a partir de exceções</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">PreconditionFailed</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="n">PreconditionFailed</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Retornando um <em>status code</em> HTTP a partir de exceções</h2>
+    <div class="iframe">
+    <iframe src="http://127.0.0.1:5000/examples/ex9">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2>Exceções HTTP com descrição customizada</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">werkzeug.exceptions</span> <span class="kn">import</span> <span class="n">PreconditionFailed</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">MyPreconditionFailed</span><span class="p">(</span><span class="n">PreconditionFailed</span><span class="p">):</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;Ooops... the precondition failed! :P&#39;</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="n">MyPreconditionFailed</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2>Exceções HTTP com descrição customizada</h2>
+    <div class="iframe">
+    <iframe src="http://127.0.0.1:5000/examples/ex10">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2><em>Error handlers</em> customizados</h2>
+    <div class="highlight"><pre><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.errorhandler</span><span class="p">(</span><span class="mi">412</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+                   <span class="n">description</span><span class="o">=</span><span class="n">error</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="n">abort</span><span class="p">(</span><span class="mi">412</span><span class="p">)</span>
+</pre></div>
+
+</section>
+
+<section class="slide">
+    <h2><em>Error handlers</em> customizados</h2>
+    <div class="iframe">
+    <iframe src="examples/ex11">
+    </iframe>
+</div>
+</section>
+
+<section class="slide">
+    <h2>Exemplos de uso</h2>
+    <ul>
+        <li>blohg (engine para blogs que usa Mercurial/Git como <em>backend</em>) - <a href="http://blohg.org/">http://blohg.org/</a></li>
+        <li>ownpaste (API REST para pastebin privado) - <a href="http://ownpaste.readthedocs.org/">http://ownpaste.readthedocs.org/</a></li>
+        <li>
+            Esta apresentação :-) -
+            <a href="https://github.com/rafaelmartins/flask-pybr9">https://github.com/rafaelmartins/flask-pybr9</a> -
+            <a href="http://pybr9.rafaelmartins.eng.br/">http://pybr9.rafaelmartins.eng.br/</a>
+        </li>
+    </ul>
+</section>
+
+<section class="slide">
+    <h2>Perguntas?</h2>
+    <ul>
+        <li>Site: <a href="http://rafaelmartins.eng.br/">http://rafaelmartins.eng.br/</a></li>
+        <li>
+            Email:
+            <ul>
+                <li>rafael@rafaelmartins.eng.br</li>
+                <li>rafael.martins@titansgroup.com.br</li>
+            </ul>
+        </li>
+        <li>
+            IRC: rafaelmartins@chat.freenode.net
+            <ul>
+                <li>#pocoo</li>
+                <li>#python-br</li>
+                <li>#gentoo-br</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
+<section class="slide">
+    <a href="http://titansgroup.com.br/pt/carreira" target="_blank">
+        <img src="static/images/titans-recruitment.png">
+    </a>
+</section>
+
+<!-- End slides. -->
+
+
+<!-- Begin extension snippets. Add or remove as needed. -->
+
+<!-- deck.navigation snippet -->
+<a href="index.html#" class="deck-prev-link" title="Previous">&#8592;</a>
+<a href="index.html#" class="deck-next-link" title="Next">&#8594;</a>
+
+<!-- deck.status snippet -->
+<p class="deck-status">
+    <span class="deck-status-current"></span>
+    /
+    <span class="deck-status-total"></span>
+</p>
+
+<!-- deck.goto snippet -->
+<form action="index.html" method="get" class="goto-form">
+    <label for="goto-slide">Go to slide:</label>
+    <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+    <datalist id="goto-datalist"></datalist>
+    <input type="submit" value="Go">
+</form>
+
+<!-- deck.hash snippet -->
+<a href="index.html" title="Permalink to this slide" class="deck-permalink">#</a>
+
+<!-- End extension snippets. -->
+
+
+<!-- Required JS files. -->
+<script src="static/jquery-1.7.2.min.js"></script>
+<script src="static/core/deck.core.js"></script>
+
+<!-- Extension JS files. Add or remove as needed. -->
+<script src="static/core/deck.core.js"></script>
+<script src="static/extensions/hash/deck.hash.js"></script>
+<script src="static/extensions/menu/deck.menu.js"></script>
+<script src="static/extensions/goto/deck.goto.js"></script>
+<script src="static/extensions/status/deck.status.js"></script>
+<script src="static/extensions/navigation/deck.navigation.js"></script>
+<script src="static/extensions/scale/deck.scale.js"></script>
+
+<!-- Initialize the deck. You can put this in an external file if desired. -->
+<script>
+    $(function() {
+        $.deck('.slide');
+    });
+</script>
+</body>
+</html>

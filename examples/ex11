@@ -1,0 +1,4 @@
+{
+  "description": "The precondition on the request for the URL failed positive evaluation.",
+  "status_code": 412
+}
